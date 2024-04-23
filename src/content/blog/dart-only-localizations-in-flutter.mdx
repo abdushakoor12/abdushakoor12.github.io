@@ -1,0 +1,108 @@
+---
+title: "Localization in flutter, dart only"
+description: "Flutter localizations without using arb or json files"
+pubDate: "Apr 23 2024"
+heroImage: "/blog-placeholder-3.jpg"
+---
+
+A while ago, I wanted to add localizations to my app without using `arb` or `json` files. So this is the solution I came up with.
+
+First of all add `flutter_localizations` as a dependency in `pubspec.yaml`
+
+```yaml
+http: any
+
+# here
+flutter_localizations:
+  sdk: flutter
+```
+
+Create an abstract class called AppLocalization which will contain the keys for localizations.
+
+```dart
+abstract class AppLocalizations {
+  const AppLocalizations();
+
+  String get title;
+  String get add;
+  String get info;
+}
+```
+
+Subclass it for every language you wanna support
+
+```dart
+class EnglishLocalizations extends AppLoclizations{
+
+@override
+String get title => "Counter App"
+
+@override
+String get add => "Add";
+
+@override
+String get info => "You have pushed the button this many times:"
+}
+```
+
+Add a static method `of`
+
+```dart
+static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
+}
+```
+
+Delegate
+
+```dart
+class AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+  const AppLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) => [
+        'en',
+        'ur',
+        'ar',
+      ].contains(locale.languageCode);
+
+  @override
+  Future<AppLocalizations> load(Locale locale) async {
+    AppLocalizations localizations = _getLocalizations(locale);
+    return SynchronousFuture<AppLocalizations>(localizations);
+  }
+
+  @override
+  bool shouldReload(AppLocalizationsDelegate old) => false;
+
+  AppLocalizations _getLocalizations(Locale locale) {
+    switch (locale.languageCode) {
+      case 'ur':
+        return const UrAppLocalizations();
+      case 'ar':
+        return const ArAppLocalizations();
+      default:
+        return const EnAppLocalizations();
+    }
+  }
+```
+
+applying and changing locales
+
+```dart
+return MaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        AppLocalizationsDelegate(),
+      ],
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('ur', ''),
+        Locale('ar', ''),
+      ],
+      locale: Locale('en', ''),
+      home: const HomePage(),
+    );
+```
