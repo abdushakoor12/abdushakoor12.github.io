@@ -13,6 +13,7 @@ heroImage: '/blog-placeholder-3.jpg'
 - Deepseek - [https://chat.deepseek.com/](https://chat.deepseek.com/)
 - Cerebras - [https://cloud.cerebras.ai/](https://cloud.cerebras.ai/)
 - DuckDuckGo AI - [https://duckduckgo.com/](https://duckduckgo.com/?q=DuckDuckGo+AI+Chat&ia=chat&duckai=1)
+- Qwen - [https://chat.qwenlm.ai/](https://chat.qwenlm.ai/)
 
 ### Development Environments
 
